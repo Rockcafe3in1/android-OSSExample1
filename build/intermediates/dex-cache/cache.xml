@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/liang/AndroidStudioProjects/Android-Example-1/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.0/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="686344a780033e4ba22b926cd225f8d4941247e6">
+        <dex dex="/Users/liang/AndroidStudioProjects/Android-Example-1/app/build/intermediates/pre-dexed/debug/classes-3822f99fad89ccc380711fb6e14b4bf7b077ee20.jar" />
+    </item>
+    <item
+        jar="/Users/liang/AndroidStudioProjects/Android-Example-1/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.0/libs/internal_impl-21.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1609e6d42d0480b0f4188e2c29f75388fa12a8f0">
+        <dex dex="/Users/liang/AndroidStudioProjects/Android-Example-1/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.0-db2105a6313869e9b76d32a9bd71a88215537ed6.jar" />
+    </item>
+    <item
+        jar="/Users/liang/AndroidStudioProjects/Android-Example-1/app/libs/oss-0.3.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="931005f66b35b39d13271dcff8710bff9bc5b551">
+        <dex dex="/Users/liang/AndroidStudioProjects/Android-Example-1/app/build/intermediates/pre-dexed/debug/oss-0.3.0-b7044a7573693a08964c705947ad61d9998c1a63.jar" />
+    </item>
+    <item
+        jar="/Users/liang/AndroidStudioProjects/Android-Example-1/app/libs/oss-0.3.0-javadoc.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="e622a4bf01437b4d2cd9408e8590c06224e8de49">
+        <dex dex="/Users/liang/AndroidStudioProjects/Android-Example-1/app/build/intermediates/pre-dexed/debug/oss-0.3.0-javadoc-98181d9ff2c982876ca11bce59b8c2ca507f402f.jar" />
+    </item>
+    <item
+        jar="/Users/liang/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.0/support-annotations-21.0.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1a578b9607b36266c63d43a4fa0ab5664dbe911e">
+        <dex dex="/Users/liang/AndroidStudioProjects/Android-Example-1/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.0-156f6be294fdc6778c81c84fd2eefa405110a31b.jar" />
+    </item>
+
+</items>
