@@ -11,12 +11,12 @@
         android:text="OSS Android SDK" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/cancel_button"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/button1"
-        android:layout_toRightOf="@+id/button1"
+        android:layout_alignTop="@+id/start_button"
+        android:layout_toRightOf="@+id/start_button"
         android:text="取消下载" />
 
     <ProgressBar
@@ -25,13 +25,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button1"
+        android:layout_below="@+id/start_button"
         android:layout_marginTop="86dp"
         android:max="100"
         android:visibility="visible" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/start_button"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
