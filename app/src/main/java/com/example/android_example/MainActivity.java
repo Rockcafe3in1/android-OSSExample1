@@ -23,55 +23,40 @@ import com.aliyun.mbaas.oss.util.OSSToolKit;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Solve dependency issue while importing JAR
+// The Token Generator to generate token
+// What does OSS Bucket mean?
+// What does OSS Data mean?
+// What does Taskhandler mean?
+
+// TODO: Solved dependency issue while importing JAR
 // Firstly create app/libs directory
 // copy Jar files to app/libs
 // performing Add as Library option on Jar file
 // app/build.gradle will get updated with new dependencies
 
+
+/**
+ * Fetch picture from OSS and converting picture to byte array
+ * Input: private OSS
+ * Output: picture saved as byte stream
+ * */
 public class MainActivity extends Activity {
 
-    static final String accessKey = "Your AccessKey"; // 测试代码没有考虑AK/SK的安全性
-    static final String screctKey = "Your SecretKey";
-
-    // 记录object和显示控件的对应关系
-    Map<String, ProgressBar> mapBarAndObject = new HashMap<String, ProgressBar>();
+    // Access Key ID and Access Key Secrete
+    static final String accessKey = "6kbI7MI3WMGz4Sig";
+    static final String secretKey = "this-is-your-secrete-key";
     public Handler progressHandler = new ProgressHandler();
-    private ProgressBar progressBar;
-
-    public Handler successHandler = new SucessHandler();
+    public Handler successHandler = new SuccessHandler();
     public OSSBucket sampleBucket;
+    // 记录object和显示控件的对应关系
+    Map<String, ProgressBar> mMapBarAndObject = new HashMap<String, ProgressBar>();
+    private ProgressBar mProgressBar;
+    private TaskHandler mHandler;
 
-    private TaskHandler tHandler;
-
-    class ProgressHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Bundle b = msg.getData();
-            int currentSize = b.getInt("current");
-            int totalSize = b.getInt("total");
-            String key = b.getString("objectKey");
-            ProgressBar bar = mapBarAndObject.get(key);
-            bar.setProgress((int) (100 * (1.000 * currentSize / totalSize)));
-        }
-    }
-
-    class SucessHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle b = msg.getData();
-            String oper = b.getString("operation");
-            String key = b.getString("objectKey");
-            super.handleMessage(msg);
-            Toast.makeText(getApplicationContext(), oper + key + "成功!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private static void makeToast(String oper, String key, Handler handler) {
+    private static void makeToast(String operation, String key, Handler handler) {
         Message msg = new Message();
         Bundle b = new Bundle();
-        b.putString("operation", oper);
+        b.putString("operation", operation);
         b.putString("objectKey", key);
         msg.setData(b);
         handler.sendMessage(msg);
@@ -87,19 +72,27 @@ public class MainActivity extends Activity {
         handler.sendMessage(msg);
     }
 
+    // Get started from here
     static {
+        // Global default token generator
         OSSClient.setGlobalDefaultTokenGenerator(new TokenGenerator() { // 设置全局默认加签器
             @Override
             public String generateToken(String httpMethod, String md5, String type, String date,
-                    String ossHeaders, String resource) {
+                                        String ossHeaders, String resource) {
 
                 String content = httpMethod + "\n" + md5 + "\n" + type + "\n" + date + "\n" + ossHeaders
                         + resource;
 
-                return OSSToolKit.generateToken(accessKey, screctKey, content);
+                // Now start the progress of generating token
+                // so what do you request to obtain token?
+                // Access Key ID + Access Key Secrete
+                return OSSToolKit.generateToken(accessKey, secretKey, content);
             }
         });
-        OSSClient.setGlobalDefaultHostId("oss-cn-hangzhou.aliyuncs.com"); // 设置全局默认数据中心域名
+
+        // Setup Data center address
+        OSSClient.setGlobalDefaultHostId("oss-cn-beijing.aliyuncs.com"); // 设置全局默认数据中心域名
+        // Setup Access Control rule: private, public-read, public-read-write
         OSSClient.setGlobalDefaultACL(AccessControlList.PRIVATE); // 设置全局默认bucket访问权限
     }
 
@@ -108,30 +101,35 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar1);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
 
         OSSClient.setApplicationContext(getApplicationContext()); // 传入应用程序context
 
         // 开始单个Bucket的设置
-        sampleBucket = new OSSBucket("oss-example");
-        sampleBucket.setBucketACL(AccessControlList.PUBLIC_READ_WRITE); // 如果这个Bucket跟全局默认的访问权限不一致，就需要单独设置
-        // sampleBucket.setBucketHostId("oss-cn-hangzhou.aliyuncs.com"); // 如果这个Bucket跟全局默认的数据中心不一致，就需要单独设置
+        sampleBucket = new OSSBucket("rockcafe-cn-beijing-photostream");
+        sampleBucket.setBucketACL(AccessControlList.PRIVATE); // 如果这个Bucket跟全局默认的访问权限不一致，就需要单独设置
+        // sampleBucket.setBucketHostId("oss-cn-beijing.aliyuncs.com"); // 如果这个Bucket跟全局默认的数据中心不一致，就需要单独设置
         // sampleBucket.setBucketTokenGen(new TokenGenerator() {...}); // 如果这个Bucket跟全局默认的加签方法不一致，就需要单独设置
         // sampleBucket.setBucketAccessRefer("your.refer.com"); // 如果这个Bucket开启了防盗链功能，就需要通过这个接口设置reference
 
         // 在map中记录文件和控件的对应关系
-        mapBarAndObject.put("aliyun-logo.png", progressBar); // 建立进度条与下载文件的对应关系
+        mMapBarAndObject.put("family-photo/DSC00785_i.jpg", mProgressBar); // 建立进度条与下载文件的对应关系
 
-        Button startDownload = (Button) findViewById(R.id.button1);
+        Button startDownload = (Button) findViewById(R.id.start_button);
         startDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OSSData ossData = new OSSData(sampleBucket, "aliyun-logo.png");
-                tHandler = ossData.getInBackground(new GetBytesCallback() {
+
+                // TODO: Fetching a simple picutre from OSS's bucket
+                OSSData ossData = new OSSData(sampleBucket, "family-photo/DSC00785_i.jpg");
+                mHandler = ossData.getInBackground(new GetBytesCallback() {
 
                     @Override
                     public void onSuccess(String objectKey, byte[] data) {
-                        Log.d("onSuccess", "complete downloading, data.length: " + data.length);
+
+                        // Congratulations! you have successfully fetch the picture
+
+                        Log.d("onSuccess", "Complete downloading picture. data length: " + data.length);
                         makeToast("download", objectKey, successHandler);
                     }
 
@@ -149,15 +147,40 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button cancelDownload = (Button) findViewById(R.id.button2);
+        Button cancelDownload = (Button) findViewById(R.id.cancel_button);
         cancelDownload.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (tHandler != null) {
-                    tHandler.cancel(); // 取消下载任务
+                if (mHandler != null) {
+                    mHandler.cancel(); // 取消下载任务
                 }
             }
         });
+    }
+
+    class ProgressHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            // So what do you wanna do with Progress Handler
+            super.handleMessage(msg);
+            Bundle b = msg.getData();
+            int currentSize = b.getInt("current");
+            int totalSize = b.getInt("total");
+            String key = b.getString("objectKey");
+            ProgressBar bar = mMapBarAndObject.get(key);
+            bar.setProgress((int) (100 * (1.000 * currentSize / totalSize)));
+        }
+    }
+
+    class SuccessHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle b = msg.getData();
+            String operation = b.getString("operation");
+            String key = b.getString("objectKey");
+            super.handleMessage(msg);
+            Toast.makeText(getApplicationContext(), operation + key + "成功!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
